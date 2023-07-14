@@ -2,13 +2,9 @@
 
 namespace Tests\Feature\Faq\QuestionAnswer;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\Assert;
 use Inertia\Testing\AssertableInertia;
 use Tests\BaseTestCase;
-use Wepa\Faq\Database\seeders\DefaultSeeder;
 use Wepa\Faq\Models\Category;
-use Wepa\Faq\Models\CategoryTranslation;
 use Wepa\Faq\Models\QuestionAnswer;
 use Wepa\Faq\Models\QuestionAnswerTranslation;
 
@@ -70,7 +66,6 @@ class BackendQuestionAnswerControllerTest extends BaseTestCase
             ->delete(route('admin.faq.questions-answers.destroy', ['questionAnswer' => $questionAnswer->id]))
             ->assertRedirectToRoute('admin.faq.questions-answers.index');
 
-
         $this->assertDatabaseMissing((new QuestionAnswerTranslation())->getTable(), ['question' => 'Test question']);
     }
 
@@ -85,7 +80,7 @@ class BackendQuestionAnswerControllerTest extends BaseTestCase
         $this->actingAs($this->superAdminUser())
             ->get(route('admin.faq.questions-answers.index'))
             ->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Vendor/Faq/Backend/QuestionAnswer/Index')
                 ->has('questionsAnswers')
                 ->where('questionsAnswers.data.0.question', $questionAnswer->question)
@@ -97,7 +92,7 @@ class BackendQuestionAnswerControllerTest extends BaseTestCase
         $this->actingAs($this->superAdminUser())
             ->get(route('admin.faq.questions-answers.create'))
             ->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Vendor/Faq/Backend/QuestionAnswer/Create')
             );
     }
@@ -112,7 +107,7 @@ class BackendQuestionAnswerControllerTest extends BaseTestCase
         $this->actingAs($this->superAdminUser())
             ->get(route('admin.faq.questions-answers.edit', ['questionAnswer' => $questionAnswer->id]))
             ->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Vendor/Faq/Backend/QuestionAnswer/Edit')
                 ->has('questionAnswer')
                 ->where('questionAnswer.translations.en.question', $questionAnswer->question)

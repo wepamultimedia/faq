@@ -23,7 +23,7 @@ class BackendCategoryControllerTest extends BaseTestCase
         $this->seed(DefaultSeeder::class);
 
         $this->assertDatabaseHas((new CategoryTranslation())->getTable(), [
-            'name' => 'General'
+            'name' => 'General',
         ]);
     }
 
@@ -32,7 +32,7 @@ class BackendCategoryControllerTest extends BaseTestCase
         $data = ['translations' => ['en' => ['name' => 'Test']]];
         $this->actingAs($this->superAdminUser())
             ->post(route('admin.faq.categories.store'), $data)
-            ->assertRedirectToRoute('admin.faq.categories.index');;
+            ->assertRedirectToRoute('admin.faq.categories.index');
 
         $this->assertDatabaseHas((new CategoryTranslation())->getTable(), ['name' => 'Test']);
     }
@@ -47,7 +47,7 @@ class BackendCategoryControllerTest extends BaseTestCase
         $category = Category::whereTranslation('name', 'Test')->first();
         $this->actingAs($this->superAdminUser())
             ->put(route('admin.faq.categories.update', ['category' => $category->id]), $dataUpdate)
-            ->assertRedirectToRoute('admin.faq.categories.index');;
+            ->assertRedirectToRoute('admin.faq.categories.index');
 
         $this->assertDatabaseHas((new CategoryTranslation())->getTable(), ['name' => 'Test Updated']);
     }
@@ -71,7 +71,7 @@ class BackendCategoryControllerTest extends BaseTestCase
         $this->actingAs($this->superAdminUser())
             ->get(route('admin.faq.categories.index'))
             ->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Vendor/Faq/Backend/Category/Index')
                 ->has('categories')
                 ->where('categories.data.0.name', 'General')
@@ -83,7 +83,7 @@ class BackendCategoryControllerTest extends BaseTestCase
         $this->actingAs($this->superAdminUser())
             ->get(route('admin.faq.categories.create'))
             ->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Vendor/Faq/Backend/Category/Create')
             );
     }
@@ -96,7 +96,7 @@ class BackendCategoryControllerTest extends BaseTestCase
         $this->actingAs($this->superAdminUser())
             ->get(route('admin.faq.categories.edit', ['category' => $category->id]))
             ->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Vendor/Faq/Backend/Category/Edit')
                 ->has('category')
                 ->where('category.name', $category->name)
