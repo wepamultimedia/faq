@@ -8,6 +8,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Wepa\Faq\Commands\FaqDemoCommand;
 use Wepa\Faq\Commands\FaqInstallCommand;
 use Wepa\Faq\Commands\FaqUninstallCommand;
+use Wepa\Faq\Commands\FaqUpdateCommand;
 use Wepa\Faq\Database\seeders\DefaultSeeder;
 
 class FaqServiceProvider extends PackageServiceProvider
@@ -52,6 +53,7 @@ class FaqServiceProvider extends PackageServiceProvider
                 FaqInstallCommand::class,
                 FaqUninstallCommand::class,
                 FaqDemoCommand::class,
+                FaqUpdateCommand::class,
             ]);
     }
 
