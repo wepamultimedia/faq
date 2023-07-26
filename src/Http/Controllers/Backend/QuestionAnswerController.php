@@ -4,6 +4,7 @@ namespace Wepa\Faq\Http\Controllers\Backend;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Inertia\Response;
 use Wepa\Core\Http\Controllers\Backend\InertiaController;
@@ -17,35 +18,22 @@ class QuestionAnswerController extends InertiaController
 {
     public string $packageName = 'faq';
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $questionsAnswers = QuestionAnswerResource::collection(QuestionAnswer::orderBy('position')->paginate());
+        $query = QuestionAnswer::orderBy('position')->when($request->search, function ($query, $search) {
+            $query->whereTranslationLike('question', "%$search%");
+        });
+
+        $questionsAnswers = QuestionAnswerResource::collection($query->paginate());
 
         return $this->render('Vendor/Faq/Backend/QuestionAnswer/Index', ['faq', 'question-answer'], compact(['questionsAnswers']));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        $categories = CategoryResource::collection(Category::orderBy('position')->get())->resolve();
-
-        return $this->render('Vendor/Faq/Backend/QuestionAnswer/Create', ['faq', 'question-answer'], compact(['categories']));
     }
 
     public function position(QuestionAnswer $questionAnswer, int $position): RedirectResponse|Application|Redirector
     {
         $questionAnswer->updatePosition($position);
 
-        return redirect(route('admin.faq.questions-answers.index'));
+        return back();
     }
 
     /**
@@ -64,7 +52,17 @@ class QuestionAnswerController extends InertiaController
         $questionAnswer = QuestionAnswer::create($data);
         $questionAnswer->touch();
 
-        return redirect(route('admin.faq.questions-answers.index'));
+        return redirect(session()->has('backUrl')
+            ? session()->get('backUrl')
+            : route('admin.faq.questions-answers.index'));
+    }
+
+    public function create(): Response
+    {
+        session()->flash('backUrl', url()->previous());
+        $categories = CategoryResource::collection(Category::orderBy('position')->get())->resolve();
+
+        return $this->render('Vendor/Faq/Backend/QuestionAnswer/Create', ['faq', 'question-answer'], compact(['categories']));
     }
 
     /**
@@ -72,6 +70,7 @@ class QuestionAnswerController extends InertiaController
      */
     public function edit(QuestionAnswer $questionAnswer): Response
     {
+        session()->flash('backUrl', url()->previous());
         $categories = CategoryResource::collection(Category::orderBy('position')->get())->resolve();
         $questionAnswer = QuestionAnswerResource::make($questionAnswer)->resolve();
 
@@ -92,7 +91,9 @@ class QuestionAnswerController extends InertiaController
 
         $questionAnswer->update($data);
 
-        return redirect(route('admin.faq.questions-answers.index'));
+        return redirect(session()->has('backUrl')
+            ? session()->get('backUrl')
+            : route('admin.faq.questions-answers.index'));
     }
 
     /**
@@ -100,8 +101,9 @@ class QuestionAnswerController extends InertiaController
      */
     public function destroy(QuestionAnswer $questionAnswer): Redirector|RedirectResponse|Application
     {
+        $questionAnswer->updatePosition(QuestionAnswer::lastPosition());
         $questionAnswer->delete();
 
-        return redirect(route('admin.faq.questions-answers.index'));
+        return back();
     }
 }

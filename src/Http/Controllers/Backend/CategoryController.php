@@ -30,6 +30,8 @@ class CategoryController extends InertiaController
      */
     public function create(): Response
     {
+        session()->flash('backUrl', url()->previous());
+
         return $this->render('Vendor/Faq/Backend/Category/Create', ['faq', 'category']);
     }
 
@@ -37,7 +39,7 @@ class CategoryController extends InertiaController
     {
         $category->updatePosition($position);
 
-        return redirect(route('admin.faq.categories.index'));
+        return back();
     }
 
     /**
@@ -56,7 +58,9 @@ class CategoryController extends InertiaController
         $category = Category::create($data);
         $category->touch();
 
-        return redirect(route('admin.faq.categories.index'));
+        return redirect(session()->has('backUrl')
+            ? session()->get('backUrl')
+            : route('admin.faq.categories.index'));
     }
 
     /**
@@ -64,6 +68,7 @@ class CategoryController extends InertiaController
      */
     public function edit(Category $category): Response
     {
+        session()->flash('backUrl', url()->previous());
         $category = CategoryResource::make($category)->resolve();
 
         return $this->render('Vendor/Faq/Backend/Category/Edit', ['faq', 'category'], compact(['category']));
@@ -83,7 +88,9 @@ class CategoryController extends InertiaController
 
         $category->update($params);
 
-        return redirect(route('admin.faq.categories.index'));
+        return redirect(session()->has('backUrl')
+            ? session()->get('backUrl')
+            : route('admin.faq.categories.index'));
     }
 
     /**
@@ -91,8 +98,9 @@ class CategoryController extends InertiaController
      */
     public function destroy(Category $category): Redirector|RedirectResponse|Application
     {
+        $category->updatePosition($category::lastPosition());
         $category->delete();
 
-        return redirect(route('admin.faq.categories.index'));
+        return back();
     }
 }
