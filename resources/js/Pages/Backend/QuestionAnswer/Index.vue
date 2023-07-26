@@ -18,7 +18,7 @@ const props = defineProps(["questionsAnswers"]);
 
 const updatePosition = (item, position) => {
     router.put(route("admin.faq.questions-answers.position", {
-        category: item.id,
+        questionAnswer: item.id,
         position: position
     }), {},{
         preserveState: true,

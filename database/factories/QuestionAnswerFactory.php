@@ -17,7 +17,7 @@ class QuestionAnswerFactory extends Factory
 
     public function configure()
     {
-        self::$position = Category::nextPosition();
+        self::$position = QuestionAnswer::nextPosition();
 
         return $this->afterMaking(function (QuestionAnswer $questionAnswer) {
             $category = Category::inRandomOrder()->first();

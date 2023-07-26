@@ -12,16 +12,28 @@ class QuestionAnswerController extends Controller
 {
     public function index(Category $category = null)
     {
-        return QuestionAnswerResource::collection(QuestionAnswer::orderBy('position')->paginate());
+        $query = QuestionAnswer::orderBy('position');
+
+        if ($category) {
+            $query->whereCategoryId($category);
+        }
+
+        return QuestionAnswerResource::collection($query->paginate());
     }
 
-    public function questions()
+    public function questions(int $number = 10, int $category = null)
     {
-        return QuestionResource::collection(QuestionAnswer::orderBy('position')->paginate());
+        $query = QuestionAnswer::orderBy('position')->take($number);
+
+        if ($category) {
+            $query->whereCategoryId($category);
+        }
+
+        return QuestionResource::collection($query->get());
     }
 
     public function answer(QuestionAnswer $questionAnswer)
     {
-        return $questionAnswer->answer;
+        return QuestionAnswerResource::make($questionAnswer);
     }
 }
