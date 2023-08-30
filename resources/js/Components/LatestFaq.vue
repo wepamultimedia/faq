@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import axios from "axios";
+import {usePage} from "@inertiajs/vue3";
 
 const props = defineProps({
     number: {
@@ -12,9 +13,10 @@ const props = defineProps({
 const show = ref(null);
 const questions = ref([]);
 const currentQuestionAnswer = ref({id: null, answer: null});
+const page = usePage().props.default;
 
 function loadQuestions() {
-    axios.get(route('api.v1.faq.questions-answers.questions', {number: props.number}))
+    axios.get(route('api.v1.faq.questions-answers.questions', {locale: page.locale, number: props.number}))
         .then(response => {
             questions.value = response.data.data;
         });
@@ -22,7 +24,7 @@ function loadQuestions() {
 
 function loadAnswer(questionAnswer) {
     if (questionAnswer.id !== currentQuestionAnswer.value.id) {
-        axios.get(route('api.v1.faq.questions-answers.answer', {questionAnswer: questionAnswer.id}))
+        axios.get(route('api.v1.faq.questions-answers.answer', {locale: page.locale, questionAnswer: questionAnswer.id}))
             .then(response => {
                 currentQuestionAnswer.value = response.data.data;
             });
