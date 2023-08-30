@@ -3,29 +3,32 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 
 const props = defineProps({
-    number: Number,
-    default: 10
+    number: {
+        type: Number,
+        default: 10
+    }
 });
 
 const show = ref(null);
 const questions = ref([]);
-const answer = ref({id: null, answer: null});
+const currentQuestionAnswer = ref({id: null, answer: null});
 
 function loadQuestions() {
-    axios.get(route('api.v1.faq.questions-answers.questions'))
+    axios.get(route('api.v1.faq.questions-answers.questions', {number: props.number}))
         .then(response => {
             questions.value = response.data.data;
         });
 }
 
 function loadAnswer(questionAnswer) {
-    if (questionAnswer.id !== answer.value.id) {
+    if (questionAnswer.id !== currentQuestionAnswer.value.id) {
         axios.get(route('api.v1.faq.questions-answers.answer', {questionAnswer: questionAnswer.id}))
             .then(response => {
-                answer.value = {id: questionAnswer.id, answer: response.data};
+                currentQuestionAnswer.value = response.data.data;
             });
+    } else {
+        questionAnswer.value = null;
     }
-    answer.value = {id: null, answer: null};
 }
 
 onMounted(() => {
@@ -38,12 +41,12 @@ onMounted(() => {
     <ul class="[&>li]:my-2">
         <template v-for="question in questions"
                   :key="'faq-' + question.id">
-            <li :class="{'border-skin-primary border-2' : question.id === answer.id}"
+            <li :class="{'border-gray-600 border-2' : question.id === currentQuestionAnswer.id}"
                 class="px-4 overflow-hidden py-2 border border-gray-600">
-                <button class="text-xl font-semibold w-full text-left flex justify-between items-center"
+                <button class="font-semibold w-full text-left flex justify-between items-center"
                         @click="loadAnswer(question)">
-                    <span :class="{'text-skin-primary' : question.id === answer.id}">{{ question.question }}</span>
-                    <svg :class="{'rotate-0' : question.id === answer.id}"
+                    <span :class="{'' : question.id === currentQuestionAnswer.id}" class="text-xl">{{ question.question }}</span>
+                    <svg :class="{'rotate-0' : question.id === currentQuestionAnswer.id}"
                          aria-hidden="true"
                          class="w-6 h-6 -rotate-90"
                          fill="none"
@@ -57,9 +60,9 @@ onMounted(() => {
                     </svg>
                 </button>
                 <transition name="faq-answer">
-                    <p v-if="answer.id === question.id"
-                       class="m-0 p-0 my-4 pl-4 ml-4 border-l border-skin-primary ckeditor"
-                       v-html="answer.answer">
+                    <p v-if="currentQuestionAnswer.id === question.id"
+                       class="m-0 p-0 my-4 pl-4 ml-4 border-l border-gray-600 ckeditor"
+                       v-html="currentQuestionAnswer.answer">
                     </p>
                 </transition>
             </li>
