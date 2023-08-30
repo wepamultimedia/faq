@@ -10,8 +10,10 @@ use Wepa\Faq\Models\QuestionAnswer;
 
 class QuestionAnswerController extends Controller
 {
-    public function index(Category $category = null)
+    public function index(string $locale, Category $category = null)
     {
+        app()->setLocale($locale);
+
         $query = QuestionAnswer::orderBy('position');
 
         if ($category) {
@@ -21,8 +23,9 @@ class QuestionAnswerController extends Controller
         return QuestionAnswerResource::collection($query->paginate());
     }
 
-    public function questions(int $number = 10, int $category = null)
+    public function questions(string $locale, int $number, int $category = null)
     {
+        app()->setLocale($locale);
         $query = QuestionAnswer::orderBy('position')->take($number);
 
         if ($category) {
@@ -32,8 +35,9 @@ class QuestionAnswerController extends Controller
         return QuestionResource::collection($query->get());
     }
 
-    public function answer(QuestionAnswer $questionAnswer)
+    public function answer(string $locale, QuestionAnswer $questionAnswer)
     {
+        app()->setLocale($locale);
         return QuestionAnswerResource::make($questionAnswer);
     }
 }

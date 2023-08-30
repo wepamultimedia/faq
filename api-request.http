@@ -1,12 +1,12 @@
-GET http://laravel_9_dev.local/api/v1/faq/questions-answers/answer/1
+GET http://laravel_9_dev.local/api/v1/faq/questions-answers/answer/en/1
 Accept: application/json
 
 ###
-GET http://laravel_9_dev.local/api/v1/faq/questions-answers
+GET http://laravel_9_dev.local/api/v1/faq/questions-answers/en
 Accept: application/json
 
 ###
-GET http://laravel_9_dev.local/api/v1/faq/questions-answers/questions/10
+GET http://laravel_9_dev.local/api/v1/faq/questions-answers/questions/en/10
 Accept: application/json
 
 ###
