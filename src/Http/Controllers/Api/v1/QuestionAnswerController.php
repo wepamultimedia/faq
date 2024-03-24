@@ -39,6 +39,6 @@ class QuestionAnswerController extends Controller
     {
         app()->setLocale($locale);
 
-        return QuestionAnswerResource::make($questionAnswer);
+        return $questionAnswer->answer;
     }
 }
