@@ -10,7 +10,7 @@ use Wepa\Faq\Models\QuestionAnswer;
 
 class QuestionAnswerController extends Controller
 {
-    public function index(string $locale, Category $category = null)
+    public function index(string $locale, ?Category $category = null)
     {
         app()->setLocale($locale);
 
@@ -23,7 +23,7 @@ class QuestionAnswerController extends Controller
         return QuestionAnswerResource::collection($query->paginate());
     }
 
-    public function questions(string $locale, int $number, int $category = null)
+    public function questions(string $locale, int $number, ?int $category = null)
     {
         app()->setLocale($locale);
         $query = QuestionAnswer::orderBy('position')->take($number);
