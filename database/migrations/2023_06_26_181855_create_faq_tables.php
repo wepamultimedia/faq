@@ -56,7 +56,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('faq_categories');
         Schema::dropIfExists('faq_categories_translations');
-        Schema::dropIfExists('faq_questions_answers');
-        Schema::dropIfExists('faq_questions_answers_translations');
+        Schema::dropIfExists('faq_qas');
+        Schema::dropIfExists('faq_qas_translations');
     }
 };
