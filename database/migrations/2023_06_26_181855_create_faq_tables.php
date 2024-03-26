@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        if(!Schema::hasTable('faq_categories')) {
+        if (! Schema::hasTable('faq_categories')) {
             Schema::create('faq_categories', function (Blueprint $table) {
                 $table->id();
                 $table->integer('position');
@@ -16,7 +16,7 @@ return new class extends Migration
             });
         }
 
-        if(!Schema::hasTable('faq_categories_translations')) {
+        if (! Schema::hasTable('faq_categories_translations')) {
             Schema::create('faq_categories_translations', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('category_id');
@@ -32,7 +32,7 @@ return new class extends Migration
             });
         }
 
-        if(!Schema::hasTable('faq_qas')) {
+        if (! Schema::hasTable('faq_qas')) {
             Schema::create('faq_qas', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('category_id');
@@ -42,7 +42,7 @@ return new class extends Migration
             });
         }
 
-        if(!Schema::hasTable('faq_qas_translations')) {
+        if (! Schema::hasTable('faq_qas_translations')) {
             Schema::create('faq_qas_translations', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('qa_id');
